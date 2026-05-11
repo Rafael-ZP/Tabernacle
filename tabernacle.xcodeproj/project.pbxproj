@@ -6,6 +6,12 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		2802DE0CF627F374552BE066 /* Bible-niv-main in Resources */ = {isa = PBXBuildFile; fileRef = 9A072F2FD8981C9B3A1F3DCA /* Bible-niv-main */; };
+		F16655FAC6B3207D2D0E097D /* Bible-tamil-main in Resources */ = {isa = PBXBuildFile; fileRef = 2E05027C94096C144DA51DA1 /* Bible-tamil-main */; };
+		F4D091239E22486DE6710266 /* Bible-kjv-master in Resources */ = {isa = PBXBuildFile; fileRef = 1B0DE23FFEDF4975E315D458 /* Bible-kjv-master */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		FF381B652FB1BFE200ADD09F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -24,6 +30,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1B0DE23FFEDF4975E315D458 /* Bible-kjv-master */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = folder; name = "Bible-kjv-master"; path = "Datasets/Bible-kjv-master"; sourceTree = "<group>"; };
+		2E05027C94096C144DA51DA1 /* Bible-tamil-main */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = folder; name = "Bible-tamil-main"; path = "Datasets/Bible-tamil-main"; sourceTree = "<group>"; };
+		9A072F2FD8981C9B3A1F3DCA /* Bible-niv-main */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = folder; name = "Bible-niv-main"; path = "Datasets/Bible-niv-main"; sourceTree = "<group>"; };
 		FF381B572FB1BFE000ADD09F /* tabernacle.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = tabernacle.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FF381B642FB1BFE200ADD09F /* tabernacleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = tabernacleTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		FF381B6E2FB1BFE200ADD09F /* tabernacleUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = tabernacleUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -79,6 +88,9 @@
 				FF381B672FB1BFE200ADD09F /* tabernacleTests */,
 				FF381B712FB1BFE200ADD09F /* tabernacleUITests */,
 				FF381B582FB1BFE000ADD09F /* Products */,
+				9A072F2FD8981C9B3A1F3DCA /* Bible-niv-main */,
+				1B0DE23FFEDF4975E315D458 /* Bible-kjv-master */,
+				2E05027C94096C144DA51DA1 /* Bible-tamil-main */,
 			);
 			sourceTree = "<group>";
 		};
@@ -111,8 +123,6 @@
 				FF381B592FB1BFE000ADD09F /* tabernacle */,
 			);
 			name = tabernacle;
-			packageProductDependencies = (
-			);
 			productName = tabernacle;
 			productReference = FF381B572FB1BFE000ADD09F /* tabernacle.app */;
 			productType = "com.apple.product-type.application";
@@ -134,8 +144,6 @@
 				FF381B672FB1BFE200ADD09F /* tabernacleTests */,
 			);
 			name = tabernacleTests;
-			packageProductDependencies = (
-			);
 			productName = tabernacleTests;
 			productReference = FF381B642FB1BFE200ADD09F /* tabernacleTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -157,8 +165,6 @@
 				FF381B712FB1BFE200ADD09F /* tabernacleUITests */,
 			);
 			name = tabernacleUITests;
-			packageProductDependencies = (
-			);
 			productName = tabernacleUITests;
 			productReference = FF381B6E2FB1BFE200ADD09F /* tabernacleUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
@@ -212,6 +218,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2802DE0CF627F374552BE066 /* Bible-niv-main in Resources */,
+				F4D091239E22486DE6710266 /* Bible-kjv-master in Resources */,
+				F16655FAC6B3207D2D0E097D /* Bible-tamil-main in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

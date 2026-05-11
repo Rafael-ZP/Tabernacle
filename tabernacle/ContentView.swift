@@ -1,24 +1,28 @@
-//
-//  ContentView.swift
-//  tabernacle
-//
-//  Created by Rafael Zieganpalg on 11/05/26.
-//
-
 import SwiftUI
 
 struct ContentView: View {
+    @State private var selectedTab: AppTab = .bible
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        ZStack(alignment: .bottom) {
+            // Main Content Area
+            Group {
+                switch selectedTab {
+                case .bible:
+                    MainReaderView()
+                case .bookmarks:
+                    BookmarksView()
+                case .analytics:
+                    AnalyticsView()
+                case .notes:
+                    NotesDashboardView()
+                }
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            
+            // Bottom Navigation
+            BottomNavView(selectedTab: $selectedTab)
         }
-        .padding()
+        .preferredColorScheme(.dark)
     }
-}
-
-#Preview {
-    ContentView()
 }
