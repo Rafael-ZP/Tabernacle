@@ -64,10 +64,11 @@ struct BottomNavView: View {
                         lineWidth: 1
                     )
             }
-            // Glow effect
-            .shadow(color: Color.purple.opacity(0.3), radius: 20, x: 0, y: 10)
+            // Drop shadow
+            .shadow(color: Color.black.opacity(0.4), radius: 15, x: 0, y: 8)
         }
         .padding(.horizontal, 20)
-        .padding(.bottom, 10)
+        .padding(.bottom, 0)
+        .ignoresSafeArea(.keyboard, edges: .bottom)
     }
 }

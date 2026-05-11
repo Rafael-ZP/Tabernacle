@@ -3,6 +3,19 @@ import SwiftUI
 struct AnalyticsView: View {
     @StateObject private var analyticsManager = AnalyticsManager.shared
     
+    // Format time spent to readable string
+    var formattedTime: String {
+        let totalSeconds = analyticsManager.totalTimeSpentSeconds
+        let hours = totalSeconds / 3600
+        let minutes = (totalSeconds % 3600) / 60
+        
+        if hours > 0 {
+            return "\(hours)h \(minutes)m"
+        } else {
+            return "\(minutes)m"
+        }
+    }
+    
     var body: some View {
         NavigationView {
             ZStack {
@@ -11,14 +24,14 @@ struct AnalyticsView: View {
                 ScrollView {
                     VStack(spacing: 24) {
                         // Header
-                        Text("Reading Habits")
-                            .font(.system(size: 28, weight: .bold))
+                        Text("Reading Insights")
+                            .font(.system(size: 32, weight: .bold, design: .rounded))
                             .foregroundColor(.white)
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .padding(.horizontal)
                         
-                        // Main Stats
-                        HStack(spacing: 16) {
+                        // Main Grid
+                        LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 16) {
                             StatCard(
                                 title: "Current Streak",
                                 value: "\(analyticsManager.currentStreak)",
@@ -28,7 +41,23 @@ struct AnalyticsView: View {
                             )
                             
                             StatCard(
-                                title: "Total Books",
+                                title: "Time Spent",
+                                value: formattedTime,
+                                subtitle: "Reading",
+                                icon: "clock.fill",
+                                color: .cyan
+                            )
+                            
+                            StatCard(
+                                title: "Chapters",
+                                value: "\(analyticsManager.totalChaptersRead)",
+                                subtitle: "Completed",
+                                icon: "checkmark.circle.fill",
+                                color: .green
+                            )
+                            
+                            StatCard(
+                                title: "Books",
                                 value: "\(analyticsManager.totalBooksRead)",
                                 subtitle: "Explored",
                                 icon: "books.vertical.fill",
@@ -93,8 +122,11 @@ struct StatCard: View {
             
             VStack(alignment: .leading, spacing: 4) {
                 Text(value)
-                    .font(.system(size: 32, weight: .bold))
+                    .font(.system(size: 28, weight: .bold, design: .rounded))
                     .foregroundColor(.white)
+                    .minimumScaleFactor(0.5)
+                    .lineLimit(1)
+                
                 Text(subtitle)
                     .font(.subheadline)
                     .foregroundColor(.secondary)
@@ -108,10 +140,10 @@ struct StatCard: View {
         }
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color(.systemGray6).opacity(0.3))
-        .cornerRadius(16)
+        .background(Color(.systemGray6).opacity(0.2))
+        .cornerRadius(20)
         .overlay(
-            RoundedRectangle(cornerRadius: 16)
+            RoundedRectangle(cornerRadius: 20)
                 .stroke(Color.white.opacity(0.1), lineWidth: 1)
         )
     }

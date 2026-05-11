@@ -36,11 +36,20 @@ class BibleDataService {
     }
     
     func getFilenameFor(translation: String, bookName: String) -> String {
-        if translation.uppercased() == "KJV" {
+        let transKey = translation.uppercased()
+        
+        if transKey == "KJV" {
             // KJV filenames remove spaces (e.g. "1 Chronicles" -> "1Chronicles.json")
-            // Except Song of Solomon which is SongofSolomon
+            if bookName.uppercased() == "SONG OF SOLOMON" {
+                return "SongofSolomon"
+            }
             return bookName.replacingOccurrences(of: " ", with: "")
+        } else if transKey == "TAMIL" {
+            if bookName.uppercased() == "SONG OF SOLOMON" {
+                return "Song of Songs"
+            }
         }
+        
         return bookName
     }
     

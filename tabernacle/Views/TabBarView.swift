@@ -15,13 +15,11 @@ struct TabBarView: View {
                     TabItemView(
                         tab: tab,
                         isActive: tabManager.activeTabId == tab.id,
+                        canClose: tabManager.tabs.count > 1,
                         onSelect: { tabManager.activeTabId = tab.id },
                         onClose: {
-                            if tab.isLocked {
-                                tabToClose = tab
-                            } else {
-                                tabManager.closeTab(id: tab.id)
-                            }
+                            HapticsManager.shared.playImpact(style: .rigid)
+                            tabToClose = tab
                         },
                         onRename: {
                             newName = tab.customName ?? ""
@@ -33,6 +31,7 @@ struct TabBarView: View {
                 
                 Button(action: {
                     withAnimation {
+                        HapticsManager.shared.playImpact(style: .light)
                         tabManager.addTab()
                     }
                 }) {
@@ -47,41 +46,51 @@ struct TabBarView: View {
             }
             .padding(.horizontal)
             .padding(.vertical, 8)
+            .animation(.spring(response: 0.4, dampingFraction: 0.7), value: tabManager.tabs)
+            .animation(.easeInOut(duration: 0.2), value: tabManager.activeTabId)
         }
         .background(Color(.systemBackground).shadow(color: Color.black.opacity(0.05), radius: 2, x: 0, y: 2))
-        .alert("Rename Tab", isPresented: Binding<Bool>(
-            get: { tabToRename != nil },
-            set: { if !$0 { tabToRename = nil } }
-        )) {
-            TextField("Tab Name", text: $newName)
-            Button("Save") {
-                if let tab = tabToRename {
-                    tabManager.renameTab(id: tab.id, name: newName)
-                }
-                tabToRename = nil
+        .background(
+            Group {
+                Color.clear.frame(width: 0, height: 0)
+                    .alert("Rename Tab", isPresented: Binding<Bool>(
+                        get: { tabToRename != nil },
+                        set: { if !$0 { tabToRename = nil } }
+                    )) {
+                        TextField("Tab Name", text: $newName)
+                        Button("Save") {
+                            if let tab = tabToRename {
+                                tabManager.renameTab(id: tab.id, name: newName)
+                            }
+                            tabToRename = nil
+                        }
+                        Button("Cancel", role: .cancel) { tabToRename = nil }
+                    }
+                
+                Color.clear.frame(width: 0, height: 0)
+                    .alert("Close Tab", isPresented: Binding<Bool>(
+                        get: { tabToClose != nil },
+                        set: { if !$0 { tabToClose = nil } }
+                    )) {
+                        Button("Close Tab", role: .destructive) {
+                            if let tab = tabToClose {
+                                tabManager.closeTab(id: tab.id, force: true)
+                            }
+                            tabToClose = nil
+                        }
+                        Button("Cancel", role: .cancel) { tabToClose = nil }
+                    } message: {
+                        Text("Do you really want to close this Tab? ⚠️")
+                    }
             }
-            Button("Cancel", role: .cancel) { tabToRename = nil }
-        }
-        .alert("Close Locked Tab", isPresented: Binding<Bool>(
-            get: { tabToClose != nil },
-            set: { if !$0 { tabToClose = nil } }
-        )) {
-            Button("Close Tab", role: .destructive) {
-                if let tab = tabToClose {
-                    tabManager.closeTab(id: tab.id, force: true)
-                }
-                tabToClose = nil
-            }
-            Button("Cancel", role: .cancel) { tabToClose = nil }
-        } message: {
-            Text("This tab is locked. Do you really want to close it?")
-        }
+        )
     }
 }
 
 struct TabItemView: View {
     let tab: ScriptureTab
     let isActive: Bool
+    let canClose: Bool
     let onSelect: () -> Void
     let onClose: () -> Void
     let onRename: () -> Void
@@ -95,6 +104,11 @@ struct TabItemView: View {
             case "green": return .green
             case "orange": return .orange
             case "purple": return .purple
+            case "pink": return .pink
+            case "teal": return .teal
+            case "indigo": return .indigo
+            case "cyan": return .cyan
+            case "brown": return .brown
             default: return .clear
             }
         }
@@ -122,15 +136,17 @@ struct TabItemView: View {
                     .lineLimit(1)
             }
             
-            Button(action: {
-                withAnimation { onClose() }
-            }) {
-                Image(systemName: "xmark")
-                    .font(.system(size: 10, weight: .bold))
-                    .foregroundColor(isActive ? .primary : .secondary)
-                    .padding(4)
-                    .background(isActive ? Color(.systemGray4) : Color.clear)
-                    .clipShape(Circle())
+            if canClose && !tab.isLocked {
+                Button(action: {
+                    withAnimation { onClose() }
+                }) {
+                    Image(systemName: "xmark")
+                        .font(.system(size: 10, weight: .bold))
+                        .foregroundColor(isActive ? .primary : .secondary)
+                        .padding(4)
+                        .background(isActive ? Color(.systemGray4) : Color.clear)
+                        .clipShape(Circle())
+                }
             }
         }
         .padding(.horizontal, tab.isPinned && !isActive ? 12 : 12)
@@ -142,7 +158,10 @@ struct TabItemView: View {
                 .stroke(tabColor != .clear ? tabColor.opacity(0.5) : Color(.systemGray4), lineWidth: isActive ? 1.5 : 0)
         )
         .onTapGesture {
-            withAnimation { onSelect() }
+            withAnimation { 
+                HapticsManager.shared.playSelection()
+                onSelect() 
+            }
         }
         .contextMenu {
             Button(action: { tabManager.togglePin(id: tab.id) }) {
@@ -164,6 +183,11 @@ struct TabItemView: View {
                 Button("Green") { tabManager.setTabColor(id: tab.id, colorHex: "green") }
                 Button("Orange") { tabManager.setTabColor(id: tab.id, colorHex: "orange") }
                 Button("Purple") { tabManager.setTabColor(id: tab.id, colorHex: "purple") }
+                Button("Pink") { tabManager.setTabColor(id: tab.id, colorHex: "pink") }
+                Button("Teal") { tabManager.setTabColor(id: tab.id, colorHex: "teal") }
+                Button("Indigo") { tabManager.setTabColor(id: tab.id, colorHex: "indigo") }
+                Button("Cyan") { tabManager.setTabColor(id: tab.id, colorHex: "cyan") }
+                Button("Brown") { tabManager.setTabColor(id: tab.id, colorHex: "brown") }
             } label: {
                 Label("Color Code", systemImage: "paintpalette")
             }

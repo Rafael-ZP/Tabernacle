@@ -23,6 +23,8 @@ class AnalyticsManager: ObservableObject {
     @Published var currentStreak: Int = 0
     @Published var totalBooksRead: Int = 0
     @Published var mostReadBook: String = "None"
+    @Published var totalTimeSpentSeconds: Int = 0
+    @Published var totalChaptersRead: Int = 0
     
     private let sessionsKey = "analytics_sessions"
     
@@ -61,14 +63,21 @@ class AnalyticsManager: ObservableObject {
         }
         self.currentStreak = streak
         
-        // Calculate Most Read
+        // Calculate Most Read and Totals
         var bookCounts: [String: Int] = [:]
+        var timeSpent = 0
+        var chaptersRead = 0
+        
         for session in sessions {
             bookCounts[session.book, default: 0] += session.chaptersRead
+            timeSpent += session.durationSeconds
+            chaptersRead += session.chaptersRead
         }
         
         self.totalBooksRead = bookCounts.keys.count
         self.mostReadBook = bookCounts.max(by: { $0.value < $1.value })?.key ?? "None"
+        self.totalTimeSpentSeconds = timeSpent
+        self.totalChaptersRead = chaptersRead
     }
     
     private func saveSessions() {

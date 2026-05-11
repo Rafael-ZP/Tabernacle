@@ -75,13 +75,45 @@ struct SearchView: View {
             .navigationBarItems(trailing: Button("Done") {
                 isPresented = false
             })
+            .onChange(of: query) { oldValue, newValue in
+                searchTask?.cancel()
+                
+                if newValue.isEmpty {
+                    results = []
+                    isSearching = false
+                    return
+                }
+                
+                let task = Task {
+                    do {
+                        try await Task.sleep(nanoseconds: 300_000_000) // 300ms debounce
+                        if !Task.isCancelled {
+                            await performSearchAsync(q: newValue)
+                        }
+                    } catch {
+                        // Task cancelled
+                    }
+                }
+                searchTask = task
+            }
         }
     }
+    
+    @State private var searchTask: Task<Void, Never>? = nil
     
     private func performSearch() {
         guard !query.isEmpty else { return }
         isSearching = true
         BibleSearchService.shared.search(query: query, translation: activeTranslation) { res in
+            self.results = res
+            self.isSearching = false
+        }
+    }
+    
+    @MainActor
+    private func performSearchAsync(q: String) async {
+        isSearching = true
+        BibleSearchService.shared.search(query: q, translation: activeTranslation) { res in
             self.results = res
             self.isSearching = false
         }

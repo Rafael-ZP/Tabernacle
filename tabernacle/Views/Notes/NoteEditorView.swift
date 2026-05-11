@@ -10,32 +10,43 @@ struct NoteEditorView: View {
     @Environment(\.dismiss) private var dismiss
     
     var body: some View {
-        VStack(spacing: 0) {
-            TextField("Note Title", text: $title)
-                .font(.system(size: 24, weight: .bold))
-                .padding()
-                .background(Color(.systemBackground))
+        ZStack {
+            Color.black.ignoresSafeArea()
             
-            Divider()
-            
-            TextEditor(text: $content)
-                .font(.body)
-                .padding()
-                .background(Color(.systemBackground))
+            VStack(alignment: .leading, spacing: 8) {
+                TextField("Note Title", text: $title)
+                    .font(.system(size: 32, weight: .bold, design: .rounded))
+                    .foregroundColor(.white)
+                    .padding(.horizontal)
+                    .padding(.top, 8)
+                
+                Text(Date().formatted(date: .abbreviated, time: .shortened))
+                    .font(.caption)
+                    .foregroundColor(.gray)
+                    .padding(.horizontal)
+                
+                TextEditor(text: $content)
+                    .font(.system(size: 18, weight: .regular))
+                    .foregroundColor(.primary)
+                    .scrollContentBackground(.hidden)
+                    .background(Color.clear)
+                    .padding(.horizontal, 12)
+            }
         }
-        .navigationTitle(noteId == nil ? "New Note" : "Edit Note")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                Button("Save") {
+                Button("Done") {
                     if let id = noteId {
                         notesManager.updateNote(notebookId: notebookId, noteId: id, title: title, content: content)
                     } else {
-                        notesManager.createNote(in: notebookId, title: title, content: content)
+                        if !title.isEmpty || !content.isEmpty {
+                            notesManager.createNote(in: notebookId, title: title, content: content)
+                        }
                     }
                     dismiss()
                 }
-                .disabled(title.isEmpty)
+                .fontWeight(.bold)
             }
         }
         .onAppear {

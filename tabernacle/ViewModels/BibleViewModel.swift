@@ -28,6 +28,10 @@ class BibleViewModel: ObservableObject {
         }
     }
     
+    var totalChapters: Int {
+        currentBook?.chapters.count ?? 0
+    }
+    
     func getChapterNumbers(for bookName: String) -> [Int] {
         guard let book = dataService.getBook(name: bookName) else { return [] }
         return book.chapters.compactMap { Int($0.chapter) }.sorted()

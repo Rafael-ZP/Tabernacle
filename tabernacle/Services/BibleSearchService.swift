@@ -44,54 +44,14 @@ class BibleSearchService {
             // Check for smart reference (e.g., "jn 3 16" or "rom 8:28")
             if let refResult = self.parseSmartReference(query: q, translation: translation) {
                 results.append(refResult)
-                // If it's an exact reference, maybe we just return it or keep searching?
-                // Returning it instantly gives that "instant route" feel
                 DispatchQueue.main.async {
                     completion(results)
                 }
                 return
             }
             
-            // Normal / Fuzzy Search
-            let searchTerms = q.split(separator: " ").map { String($0) }
-            
-            for bookName in self.dataService.allBookNames {
-                if let book = self.dataService.getBook(name: bookName, translation: translation) {
-                    for chapter in book.chapters {
-                        guard let chapterNum = Int(chapter.chapter) else { continue }
-                        for verse in chapter.verses {
-                            let textLower = verse.text.lowercased()
-                            
-                            // Check if ALL search terms match the verse (simple fuzzy)
-                            var matchesAll = true
-                            for term in searchTerms {
-                                if !textLower.contains(term) && !self.isFuzzyMatch(text: textLower, pattern: term) {
-                                    matchesAll = false
-                                    break
-                                }
-                            }
-                            
-                            if matchesAll {
-                                let res = SearchResult(
-                                    translation: translation,
-                                    book: book.book,
-                                    chapter: chapterNum,
-                                    verse: verse.verse,
-                                    text: verse.text
-                                )
-                                results.append(res)
-                                
-                                if results.count >= 200 {
-                                    DispatchQueue.main.async {
-                                        completion(results)
-                                    }
-                                    return
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+            // Use SQLite FTS5 Search
+            results = BibleDatabaseManager.shared.searchFTS(query: q, translation: translation)
             
             DispatchQueue.main.async {
                 completion(results)
