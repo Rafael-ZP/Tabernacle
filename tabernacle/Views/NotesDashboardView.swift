@@ -9,7 +9,7 @@ struct NotesDashboardView: View {
     var body: some View {
         NavigationView {
             ZStack {
-                Color.black.ignoresSafeArea()
+                Color(.systemGroupedBackground).ignoresSafeArea()
                 
                 if notesManager.notebooks.isEmpty {
                     VStack {

@@ -80,7 +80,7 @@ struct TabBarView: View {
                         }
                         Button("Cancel", role: .cancel) { tabToClose = nil }
                     } message: {
-                        Text("Do you really want to close this Tab? ⚠️")
+                        Text("Do you really want to close this Tab?")
                     }
             }
         )

@@ -9,36 +9,19 @@ struct ContentView: View {
     var body: some View {
         ZStack(alignment: .bottom) {
             if !isDatabaseReady {
-                VStack(spacing: 20) {
-                    Image(systemName: "books.vertical.fill")
-                        .font(.system(size: 60))
-                        .foregroundColor(.blue)
-                    
-                    Text("Preparing Bible Library...")
-                        .font(.title2)
-                        .fontWeight(.bold)
-                    
-                    if dbManager.isImporting {
-                        ProgressView(value: dbManager.importProgress)
-                            .progressViewStyle(.linear)
-                            .padding(.horizontal, 40)
-                        
-                        Text("Optimizing for lightning-fast offline search")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                    } else {
-                        ProgressView()
-                    }
-                }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(Color(.systemBackground))
-                .onAppear {
-                    dbManager.setupDatabaseIfNeeded {
-                        withAnimation {
-                            isDatabaseReady = true
+                SplashView(dbManager: dbManager)
+                    .transition(.scale(scale: 1.2).combined(with: .opacity))
+                    .zIndex(200)
+                    .onAppear {
+                        dbManager.setupDatabaseIfNeeded {
+                            // Adding a slight minimum delay to ensure the cinematic animation completes nicely
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                                withAnimation(.easeInOut(duration: 0.8)) {
+                                    isDatabaseReady = true
+                                }
+                            }
                         }
                     }
-                }
             } else {
                 // Main Content Area
                 Group {
@@ -63,6 +46,5 @@ struct ContentView: View {
                 }
             }
         }
-        .preferredColorScheme(.dark)
     }
 }

@@ -11,7 +11,7 @@ struct NoteEditorView: View {
     
     var body: some View {
         ZStack {
-            Color.black.ignoresSafeArea()
+            Color(.systemBackground).ignoresSafeArea()
             
             VStack(alignment: .leading, spacing: 8) {
                 TextField("Note Title", text: $title)

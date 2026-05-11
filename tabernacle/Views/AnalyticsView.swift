@@ -19,7 +19,7 @@ struct AnalyticsView: View {
     var body: some View {
         NavigationView {
             ZStack {
-                Color.black.ignoresSafeArea()
+                Color(.systemGroupedBackground).ignoresSafeArea()
                 
                 ScrollView {
                     VStack(spacing: 24) {
